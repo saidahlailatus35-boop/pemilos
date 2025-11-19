@@ -1,1 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PEMILOS SMKN 1 Ampelgading</title>
+  <style>
+    :root{
+      --blue-50:#f0f6ff;
+      --blue-100:#e6f0ff;
+      --blue-200:#cfe2ff;
+      --blue-300:#a6c8ff;
+      --blue-400:#7fb0ff;
+      --blue-500:#5c9bff;
+      --blue-600:#3f82e6;
+      --text:#0f1b2d;
+      --muted:#51627a;
+      --card:#ffffff;
+      --accent:#5c9bff;
+      --win:#2ecc71;
+      --warn:#f1c40f;
+      --danger:#e74c3c;
+    }
+    /* Dark mode */
+    .dark{
+      --blue-50:#0c1523;
+      --blue-100:#0f1b2d;
+      --blue-200:#11243a;
+      --blue-300:#183a5a;
+      --blue-400:#1f4e79;
+      --blue-500:#29639c;
+      --blue-600:#3a79b8;
+      --text:#eaf1ff;
+      --muted:#b8c4d9;
+      --card:#122033;
+      --accent:#3a79b8;
+    }
 
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, Segoe UI, system-ui, -apple-system, Arial, sans-serif;
+      color:var(--text);
+      background:linear-gradient(160deg, var(--blue-50), var(--blue-100));
+    }
+    header{
+      padding:28px 20px;
+      position:sticky; top:0; z-index:10;
+      backdrop-filter:saturate(1.3) blur(8px);
+      background:linear-gradient(160deg, rgba(255,255,255,0.55), rgba(255,255,255,0.35));
+      border-bottom:1px solid rgba(92,155,255,0.25);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:0 16px;}
+    .title{
+      display:flex; align-items:center; gap:14px;
+    }
+    .badge{
+      background:var(--blue-300);
+      color:white;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:600;
+      box-shadow:0 6px 20px rgba(92,155,255,0.35);
+    }
+    h1{margin:0; font-size:28px; letter-spacing:0.3px}
+    .sub{margin-top:6px; color:var(--muted)}
+
+    .controls{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;
+    }
+    .btn{
+      border:0; padding:10px 14px; border-radius:10px; cursor:pointer;
+      background:var(--accent); color:white; font-weight:600;
+      box-shadow:0 10px 20px rgba(92,155,255,0.35);
+    }
+    .btn.sec{
+      background:transparent; color:var(--accent);
+      border:2px solid var(--accent);
+    }
+
+    main{padding:26px 0 50px}
+    .grid{
+      display:grid; gap:18px;
+      grid-template-columns: 1.2fr 1fr;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr}
+    }
+
+    /* Card kelompok kandidat + input */
+    .panel{
+      background:var(--card);
+      border:1px solid rgba(92,155,255,0.2);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 14px 30px rgba(92,155,255,0.18);
+    }
+    .panel h2{margin:0 0 12px 0; font-size:20px}
+    .candidates{
+      display:grid; gap:14px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width:700px){
+      .candidates{grid-template-columns: 1fr}
+    }
+
+    .card{
+      border:1px solid rgba(92,155,255,0.25);
+      border-radius:14px;
+      padding:14px;
+      background:linear-gradient(180deg, rgba(166,200,255,0.16), rgba(255,255,255,0.7));
+      backdrop-filter:blur(4px);
+    }
+    .head{
+      display:flex; align-items:center; gap:12px; margin-bottom:8px;
+    }
+    .avatar{
+      width:48px; height:48px; border-radius:12px;
+      display:grid; place-items:center;
+      color:white; font-weight:700; font-size:18px;
+      background:var(--blue-500);
+      box-shadow:0 10px 20px rgba(92,155,255,0.35);
+    }
+    .name{font-weight:700}
+    .vision{color:var(--muted); font-size:13px}
+
+    .vote{
+      margin-top:10px; display:flex; gap:8px;
+      align-items:center;
+    }
+    .vote input{
+      width:100%; padding:10px; border-radius:10px; border:1px solid rgba(92,155,255,0.35);
+      background:white; color:var(--text);
+    }
+    .vote .unit{font-size:12px; color:var(--muted); padding:0 6px}
+
+    .bar{
+      margin-top:10px; height:12px; border-radius:999px;
+      background:rgba(92,155,255,0.25); overflow:hidden;
+    }
+    .bar > span{
+      display:block; height:100%;
+      background:linear-gradient(90deg, var(--blue-500), var(--blue-300));
+      width:0%;
+      transition:width .4s ease;
+    }
+    .pct{
+      margin-top:6px; font-weight:700; font-size:14px;
+    }
+
+    /* Summary panel */
+    .summary{
+      display:grid; gap:16px;
+      grid-template-rows: auto 1fr;
+    }
+    .stats{
+      display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;
+    }
+    .tile{
+      padding:12px; border-radius:12px;
+      background:linear-gradient(180deg, rgba(166,200,255,0.2), rgba(255,255,255,0.7));
+      border:1px solid rgba(92,155,255,0.25);
+    }
+    .tile .label{color:var(--muted); font-size:12px}
+    .tile .value{font-size:22px; font-weight:800}
+
+    /* Donut chart */
+    .donut{
+      position:relative; width:100%; aspect-ratio:1/1;
+      display:grid; place-items:center;
+    }
+    .ring{
+      width:80%; aspect-ratio:1/1; border-radius:50%;
+      background:
+        conic-gradient(var(--segA) 0deg var(--degA),
+                       var(--segB) var(--degA) var(--degB),
+                       var(--segC) var(--degB) 360deg);
+      box-shadow:0 20px 36px rgba(92,155,255,0.25);
+      position:relative;
+    }
+    .ring::after{
+      content:""; position:absolute; inset:12%;
+      background:var(--card); border-radius:50%;
+      box-shadow: inset 0 8px 20px rgba(92,155,255,0.12);
+    }
+    .legend{
+      position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+    }
+    .legend .dot{
+      width:12px; height:12px; border-radius:50%;
+      box-shadow:0 4px 10px rgba(92,155,255,0.25);
+    }
+    .legend span{font-size:12px; color:var(--muted)}
+    .a{background:#5c9bff} .b{background:#2ecc71} .c{background:#f1c40f}
+
+    footer{
+      margin-top:30px; padding:20px; text-align:center; color:var(--muted);
+    }
+    .brand{
+      font-weight:800; letter-spacing:0.6px; color:var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="title">
+        <div class="badge">PEMILOS 2025</div>
+        <h1>SMKN 1 Ampelgading</h1>
+      </div>
+      <div class="sub">Masukkan jumlah suara untuk setiap kandidat, persentase dan grafik akan otomatis terhitung.</div>
+      <div class="controls">
+        <button class="btn" id="modeBtn">Mode Gelap/Terang</button>
+        <button class="btn sec" id="resetBtn">Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <!-- Panel kandidat -->
+      <section class="panel">
+        <h2>Kandidat</h2>
+        <div class="candidates">
+          <!-- Kandidat A -->
+          <div class="card" data-id="A">
+            <div class="head">
+              <div class="avatar">A</div>
+              <div>
+                <div class="name">Kandidat A — Arif & Sinta</div>
+                <div class="vision">Visi: Disiplin, transparansi, dan budaya berprestasi.</div>
+              </div>
+            </div>
+            <div class="vote">
+              <input type="number" min="0" value="120" placeholder="Jumlah suara A" />
+              <span class="unit">suara</span>
+            </div>
+            <div class="bar"><span></span></div>
+            <div class="pct"><span class="pval">0%</span></div>
+          </div>
+
+          <!-- Kandidat B -->
+          <div class="card" data-id="B">
+            <div class="head">
+              <div class="avatar" style="background:#2ecc71">B</div>
+              <div>
+                <div class="name">Kandidat B — Bagas & Rara</div>
+                <div class="vision">Visi: Inovasi, literasi digital, dan kegiatan kreatif.</div>
+              </div>
+            </div>
+            <div class="vote">
+              <input type="number" min="0" value="180" placeholder="Jumlah suara B" />
+              <span class="unit">suara</span>
+            </div>
+            <div class="bar"><span></span></div>
+            <div class="pct"><span class="pval">0%</span></div>
+          </div>
+
+          <!-- Kandidat C -->
+          <div class="card" data-id="C">
+            <div class="head">
+              <div class="avatar" style="background:#f1c40f">C</div>
+              <div>
+                <div class="name">Kandidat C — Citra & Danu</div>
+                <div class="vision">Visi: Kolaborasi, layanan siswa, dan lingkungan sehat.</div>
+              </div>
+            </div>
+            <div class="vote">
+              <input type="number" min="0" value="100" placeholder="Jumlah suara C" />
+              <span class="unit">suara</span>
+            </div>
+            <div class="bar"><span></span></div>
+            <div class="pct"><span class="pval">0%</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel ringkasan -->
+      <section class="panel summary">
+        <h2>Ringkasan hasil</h2>
+
+        <div class="stats">
+          <div class="tile">
+            <div class="label">Total suara</div>
+            <div class="value" id="totalVal">0</div>
+          </div>
+          <div class="tile">
+            <div class="label">Partisipasi</div>
+            <div class="value"><span id="partVal">—</span></div>
+            <div class="label" style="margin-top:6px">Masukkan total DPT di bawah</div>
+          </div>
+          <div class="tile">
+            <div class="label">Pemenang sementara</div>
+            <div class="value" id="leadVal">—</div>
+          </div>
+        </div>
+
+        <div class="tile" style="margin-top:6px">
+          <div class="label">Total DPT (Daftar Pemilih Tetap)</div>
+          <input id="dptInput" type="number" min="0" value="500"
+                 style="margin-top:8px; width:100%; padding:10px; border-radius:10px; border:1px solid rgba(92,155,255,0.35)"/>
+        </div>
+
+        <div class="donut" id="donut">
+          <div class="ring"></div>
+          <div class="legend">
+            <div class="dot a"></div><span>A</span>
+            <div class="dot b"></div><span>B</span>
+            <div class="dot c"></div><span>C</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div>Diolah otomatis • <span class="brand">PEMILOS • SMKN 1 Ampelgading</span></div>
+    </footer>
+  </main>
+
+  <script>
+    const body = document.body;
+    const modeBtn = document.getElementById('modeBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const dptInput = document.getElementById('dptInput');
+    const totalVal = document.getElementById('totalVal');
+    const partVal = document.getElementById('partVal');
+    const leadVal = document.getElementById('leadVal');
+    const donut = document.getElementById('donut').querySelector('.ring');
+
+    // Warna segmen donut
+    donut.style.setProperty('--segA', '#5c9bff');
+    donut.style.setProperty('--segB', '#2ecc71');
+    donut.style.setProperty('--segC', '#f1c40f');
+
+    const cards = Array.from(document.querySelectorAll('.card'));
+    const state = { A:120, B:180, C:100, dpt: +dptInput.value };
+
+    // Listener input
+    cards.forEach(card=>{
+      const id = card.dataset.id;
+      const input = card.querySelector('input');
+      const bar = card.querySelector('.bar > span');
+      const pval = card.querySelector('.pval');
+
+      const update = () => {
+        state[id] = Math.max(0, +input.value || 0);
+        render();
+      };
+      input.addEventListener('input', update);
+      // simpan referensi untuk render
+      card.__bar = bar;
+      card.__pval = pval;
+    });
+    dptInput.addEventListener('input', ()=>{
+      state.dpt = Math.max(0, +dptInput.value || 0);
+      render();
+    });
+
+    function render(){
+      const sum = state.A + state.B + state.C;
+      totalVal.textContent = sum;
+
+      // Hitung persentase per kandidat
+      const pctA = sum ? (state.A/sum*100) : 0;
+      const pctB = sum ? (state.B/sum*100) : 0;
+      const pctC = sum ? (state.C/sum*100) : 0;
+
+      // Update bar dan label
+      const map = {A:pctA, B:pctB, C:pctC};
+      cards.forEach(card=>{
+        const id = card.dataset.id;
+        card.__bar.style.width = map[id].toFixed(2) + '%';
+        card.__pval.textContent = map[id] ? map[id].toFixed(1) + '%' : '0%';
+      });
+
+      // Donut degrees
+      const degA = Math.round(pctA/100*360);
+      const degB = degA + Math.round(pctB/100*360);
+      donut.style.setProperty('--degA', degA + 'deg');
+      donut.style.setProperty('--degB', degB + 'deg');
+
+      // Partisipasi
+      const part = state.dpt ? (sum/state.dpt*100) : 0;
+      partVal.textContent = state.dpt ? part.toFixed(1) + '%' : '—';
+
+      // Pemenang sementara
+      const arr = [
+        {id:'A', name:'A', val:state.A},
+        {id:'B', name:'B', val:state.B},
+        {id:'C', name:'C', val:state.C},
+      ].sort((x,y)=>y.val-x.val);
+      leadVal.textContent = sum ? `Kandidat ${arr[0].name} (${(arr[0].val/sum*100).toFixed(1)}%)` : '—';
+    }
+
+    // Mode gelap/terang
+    modeBtn.addEventListener('click', ()=> body.classList.toggle('dark'));
+
+    // Reset
+    resetBtn.addEventListener('click', ()=>{
+      cards.forEach(card=>{
+        const input = card.querySelector('input');
+        input.value = 0;
+      });
+      dptInput.value = 0;
+      state.A=0; state.B=0; state.C=0; state.dpt=0;
+      render();
+    });
+
+    // initial
+    render();
+  </script>
+</body>
+  </html>
